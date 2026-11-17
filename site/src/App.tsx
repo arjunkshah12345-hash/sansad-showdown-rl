@@ -129,7 +129,7 @@ function Proof() {
           <GradientBorder kind="linear-flow" colors={WARM} background="#c2410c" borderWidth={2} radius={18}>
             <div className="overflow-hidden rounded-[16px] bg-black">
               {ascii ? (
-                <AsciiVideo src={media(boss.file)} charset="detailed" fontSize={7} color="source" className="aspect-video w-full" />
+                <AsciiVideo src={media(boss.file)} charset="standard" fontSize={8} color="source" backdrop={0.2} normalize className="aspect-video w-full" />
               ) : (
                 <video src={media(boss.file)} poster={media(boss.poster)} controls playsInline preload="metadata" className="aspect-video w-full" />
               )}
