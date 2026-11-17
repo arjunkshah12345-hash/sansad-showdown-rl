@@ -1,0 +1,3 @@
+{"matches":10,"opponent":"mbapu","difficulty":"hard","seeds":"90000-90009","decisions":11685,"idle":10936,
+ "idle_by_own_state":{"idle":6449,"attack":2963,"knockdown":758,"getup":263,"jump":254,"hitstun":146,"blockstun":101,"walk":2},
+ "all_by_own_state":{"idle":6768,"attack":3249,"knockdown":758,"getup":282,"jump":254,"hitstun":154,"blockstun":142,"walk":78}}

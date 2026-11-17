@@ -1,0 +1,19 @@
+[
+ {
+  "wins": [
+   2,
+   1
+  ],
+  "winner": 0,
+  "player": 0,
+  "opp": "mbapu",
+  "boss": true,
+  "decisions": 1180,
+  "hp": [
+   90,
+   0
+  ],
+  "won": true,
+  "tag": "01_modi_vs_mbapu_hard"
+ }
+]

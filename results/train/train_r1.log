@@ -1,0 +1,8 @@
+samples 41758 dim 130
+ep 5 val_loss 3.449 top1 0.937 regret 0.42
+ep 10 val_loss 3.440 top1 0.942 regret 0.32
+ep 15 val_loss 3.437 top1 0.941 regret 0.33
+ep 20 val_loss 3.436 top1 0.943 regret 0.31
+ep 25 val_loss 3.435 top1 0.943 regret 0.31
+ep 30 val_loss 3.435 top1 0.943 regret 0.32
+saved nets/r1.json

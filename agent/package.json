@@ -1,0 +1,10 @@
+{
+  "name": "sansad-showdown-rl-agent",
+  "private": true,
+  "type": "module",
+  "description": "Headless simulator, search player, imitation + DAgger training and live keyboard agent for Sansad Showdown.",
+  "dependencies": {
+    "@napi-rs/canvas": "^1.1.1",
+    "playwright": "^1.65.1"
+  }
+}

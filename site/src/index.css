@@ -1,0 +1,91 @@
+@import "tailwindcss";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme {
+  --font-sans: "Geist", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "Geist Mono", ui-monospace, SFMono-Regular, monospace;
+  --color-night: #0b0806;
+  --color-ink-2: #15100c;
+  --color-line: #2a2018;
+  --color-saffron: #ff9933;
+  --color-marigold: #ffc24b;
+  --color-leaf: #2fbf4a;
+  --color-lantern: #ff5fa2;
+  --color-dim: #a8988a;
+}
+
+@theme inline {
+    --color-background: var(--background);
+    --color-foreground: var(--foreground);
+    --color-muted: var(--muted);
+    --color-muted-foreground: var(--muted-foreground);
+    --color-border: var(--border);
+    --color-ring: var(--ring);
+    --color-primary: var(--primary);
+    --color-card: var(--card);
+    --color-card-foreground: var(--foreground);
+    --color-popover: var(--popover);
+    --color-popover-foreground: var(--foreground);
+    --color-destructive: #ff5f57;
+    --color-dither-ink: var(--dither-ink);
+    --color-dither-paper: var(--dither-paper);
+    --color-dither-blue: var(--dither-color-blue);
+    --color-dither-purple: var(--dither-color-purple);
+    --color-dither-green: var(--dither-color-green);
+    --color-dither-pink: var(--dither-color-pink);
+    --color-dither-orange: var(--dither-color-orange);
+    --color-dither-red: var(--dither-color-red);
+    --color-dither-grey: var(--dither-color-grey);
+}
+
+@layer base {
+  :root {
+    --dither-ink: var(--primary);
+    --dither-paper: var(--background);
+    --dither-cell: 3px;
+    --dither-color-blue: oklch(0.56 0.18 248);
+    --dither-color-purple: oklch(0.53 0.22 302);
+    --dither-color-green: oklch(0.58 0.15 152);
+    --dither-color-pink: oklch(0.58 0.21 355);
+    --dither-color-orange: oklch(0.64 0.17 52);
+    --dither-color-red: oklch(0.55 0.21 27);
+    --dither-color-grey: oklch(0.55 0 0);
+    --dither-bloom: 0.6;
+    }
+  .dark {
+    --dither-ink: var(--primary);
+    --dither-paper: var(--background);
+    --dither-cell: 3px;
+    --dither-color-blue: oklch(0.72 0.14 240);
+    --dither-color-purple: oklch(0.7 0.18 304);
+    --dither-color-green: oklch(0.78 0.17 152);
+    --dither-color-pink: oklch(0.74 0.17 354);
+    --dither-color-orange: oklch(0.79 0.15 62);
+    --dither-color-red: oklch(0.68 0.2 25);
+    --dither-color-grey: oklch(0.66 0 0);
+    --dither-bloom: 1;
+    }
+}
+:root {
+  --primary: #ff9933;
+  --background: #0b0806;
+  --foreground: #f4ece4;
+  --muted: #1d1611;
+  --muted-foreground: #a8988a;
+  --border: #2a2018;
+  --ring: #ff9933;
+  --card: #15100c;
+  --popover: #15100c;
+  color-scheme: dark;
+}
+html { background: var(--color-night); }
+body { background: var(--color-night); color: #f4ece4; font-family: var(--font-sans); -webkit-font-smoothing: antialiased; }
+::selection { background: #ff9933; color: #0b0806; }
+.prose-x p { color: #cbbcae; line-height: 1.75; }
+.prose-x strong { color: #fff4e8; font-weight: 600; }
+.prose-x code, code.inline { font-family: var(--font-mono); font-size: .85em; background: #1d1611; border: 1px solid #2a2018; padding: .1em .35em; border-radius: 4px; color: #ffc24b; }
+pre.code { font-family: var(--font-mono); font-size: 12.5px; line-height: 1.65; background: #110d0a; border: 1px solid #2a2018; border-radius: 12px; padding: 18px 20px; overflow-x: auto; color: #e9dccf; }
+pre.code .k { color: #ff9933; } pre.code .c { color: #7a6a5c; } pre.code .s { color: #2fbf4a; } pre.code .n { color: #ffc24b; }
+.grain::after { content: ""; position: absolute; inset: 0; pointer-events: none; opacity: .06; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence baseFrequency='.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"); }
+.grid > * { min-width: 0; }

@@ -1,0 +1,13 @@
+node_modules/
+dist/
+.DS_Store
+# The game's own code is never committed. build.py extracts it locally from your own copy.
+agent/sim/game.mjs
+agent/sim/three.mjs
+agent/sim/rooms.mjs
+agent/site_raw/
+agent/mirror/
+agent/data/
+agent/recordings/
+agent/logs/
+vendor-src/

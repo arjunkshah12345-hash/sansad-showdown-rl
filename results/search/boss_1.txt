@@ -1,0 +1,1 @@
+{"player":"modi","opponent":"mbapu","difficulty":"hard","seed":1,"wins":[2,1],"won":true,"decisions":1692,"sec":289.8,"top":"idle:1554 punch:38 fwdkick:26 kick:24 grab:11 lowpunch:7"}
