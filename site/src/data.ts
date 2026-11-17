@@ -90,13 +90,13 @@ export const ACTIONS = [
 ] as const
 
 export const live = [
-  { opp: "Mbapu · final boss", diff: "Hard", score: "2–1", hp: 90, decisions: 1180, length: "2:58", file: "02_modi_vs_mbapu_hard_WIN.mp4", poster: "boss_60.jpg" },
-  { opp: "Rahul", diff: "Hard", score: "2–0", hp: 74, decisions: 600, length: "1:34", file: "01_modi_vs_rahul_hard_WIN.mp4", poster: "rahul_10.jpg" },
+  { opp: "Mbapu · final boss", diff: "Hard", score: "2–1", hp: 98, decisions: 1154, length: "2:49", file: "boss_hard_win_audio.mp4", poster: "boss_86.jpg" },
+  { opp: "Rahul", diff: "Hard", score: "2–0", hp: 76, decisions: 470, length: "1:19", file: "rahul_hard_win_audio.mp4", poster: "rahul_10.jpg" },
 ]
 
 export const stills = [
-  { src: "boss_20.jpg", caption: "Round 1 · the boss knocked down" },
-  { src: "boss_140.jpg", caption: "Jumping kick into the boss" },
-  { src: "boss_100.jpg", caption: "The boss's taunt cinematic, mid-fight" },
-  { src: "boss_172.jpg", caption: "Match over · Mitraman wins 2–1" },
+  { src: "boss_18.jpg", caption: "Round 1 · a grab on the boss" },
+  { src: "boss_84.jpg", caption: "Mitra Chakra, the super, fired when the meter is full" },
+  { src: "boss_90.jpg", caption: "The boss knocked down" },
+  { src: "boss_162.jpg", caption: "Match over · Mitraman wins 2–1" },
 ]
