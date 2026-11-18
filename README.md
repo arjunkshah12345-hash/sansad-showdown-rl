@@ -6,8 +6,8 @@ A neural network that beats the secret **Hard final boss** of [Sansad Showdown](
 
 | | |
 |---|---|
-| Live win vs Hard final boss (Mbapu) | **2–1**, last round won with 90 HP left, 1,180 decisions, 2:58 of footage |
-| Live win vs Hard Rahul | **2–0**, 600 decisions, 1:34 of footage |
+| Live win vs Hard final boss (Mbapu) | **2–1**, last round won with 98 HP left, 1,154 decisions, 2:49 of footage, with game audio |
+| Live win vs Hard Rahul | **2–0**, 470 decisions, 1:19 of footage, with game audio |
 | Final net vs Hard boss, simulator | **87 / 100** matches |
 | Final net vs the other 9 Hard opponents, simulator | **97 / 100** matches |
 | Search player it learned from, vs Hard boss | 4 / 5 (8 samples, 48-tick horizon) |
@@ -116,6 +116,8 @@ The game exposes a read-only `window.__game` hook for its developer, but only on
 
 `agent/live.mjs` drives Chrome through Playwright, starts a Hard match, records the tab through the DevTools screencast, and encodes the frames to H.264 using each frame's real timestamp.
 
+`agent/live_audio.mjs` does the same with the game's sound. Before the page loads, it hooks `AudioNode.connect`, so anything wired to the speakers is also routed into a `MediaStreamDestination`. A `MediaRecorder` captures that stream as Opus and streams it back to Node. The audio is then lined up with the video using the wall-clock start time of each. The fights on the site were recorded this way.
+
 ### What the net actually does
 
 Over 10 simulated boss matches (11,685 decisions), **93.6% of its choices are `idle`**. They split two ways:
@@ -143,6 +145,7 @@ agent/
   dagger.sh           one DAgger round
   live-agent/         the in-browser keyboard agent
   live.mjs            live run + screen recording
+  live_audio.mjs      same, with the game's audio captured and muxed in
   policy/             trained weights (r1 imitation, r2 DAgger)
 results/              eval, training, search and live logs behind every number above
 site/                 the write-up site (Vite + React)
@@ -163,12 +166,12 @@ python3 train.py policy/r1.json data/r0/*.jsonl
 node sim/evalnet.mjs policy/dagger_r2.json 90000 100 mbapu # evaluate
 cp policy/dagger_r2.json mirror/agent/policy.json && cp live-agent/*.mjs mirror/agent/
 (cd mirror && python3 -m http.server 8790 --bind 127.0.0.1) &
-node live.mjs recordings mbapu
+node live_audio.mjs recordings 4 mbapu                     # retries up to 4 times until a win
 ```
 
 ## Caveats
 
-- One live win against the boss is one sample. The 87/100 rate comes from the simulator, which runs the same fight code but no renderer, so frame timing in the browser can differ slightly.
+- One live win against the boss is one sample. Live results so far: the first silent recording session won its single boss attempt. The audio session took three attempts. The first loss (1–2) never produced a video because the disk filled up mid-write. The second attempt also lost 1–2 (logged in `results/live/boss.json`), and the third won 2–1. That makes 2 wins in 4 live boss matches, well under the simulator's 87%. The 87/100 rate comes from the simulator, which runs the same fight code but no renderer, so frame timing in the browser can differ slightly.
 - The final rate is against the bot's Hard setting. Humans don't play like the bot, and the net has never faced one.
 - Only one character (Mitraman) was trained.
 - The live run uses the developer's localhost hook to *read* state. The net still sends nothing but keyboard input.

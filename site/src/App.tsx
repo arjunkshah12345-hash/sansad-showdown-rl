@@ -138,7 +138,7 @@ function Proof() {
           <div className="mt-4 flex flex-wrap items-center justify-between gap-3">
             <div>
               <div className="text-lg text-[#fff4e8]">vs {boss.opp} · {boss.diff}</div>
-              <div className="font-mono text-[12px] text-dim">won {boss.score} · {boss.decisions.toLocaleString()} decisions · {boss.length}</div>
+              <div className="font-mono text-[12px] text-dim">won {boss.score} · {boss.decisions.toLocaleString()} decisions · {boss.length} · sound on</div>
             </div>
             <button onClick={() => setAscii((v) => !v)} className="rounded-full border border-line px-4 py-2 font-mono text-[12px] text-[#fff4e8] transition hover:border-saffron hover:text-saffron">
               {ascii ? "[ back to video ]" : "[ replay it in ASCII ]"}
@@ -151,7 +151,7 @@ function Proof() {
           </div>
           <div>
             <div className="text-lg text-[#fff4e8]">vs {rahul.opp} · {rahul.diff}</div>
-            <div className="font-mono text-[12px] text-dim">won {rahul.score} · {rahul.decisions} decisions · {rahul.length}</div>
+            <div className="font-mono text-[12px] text-dim">won {rahul.score} · {rahul.decisions} decisions · {rahul.length} · sound on</div>
           </div>
           <AsciiBox variant="round" title="final health" className="font-mono text-[12px] text-[#cbbcae]">
             <div className="space-y-2 p-1">
@@ -385,7 +385,7 @@ if (s.btn) tap(s.btn);               // J/K/I/L/B`}</Code>
       <div className="mt-16">
         <Label>the winning frame · drag to compare ASCII and pixels</Label>
         <div className="overflow-hidden rounded-2xl border border-line">
-          <AsciiImageCompare src={media("boss_172.jpg")} alt="The fighter celebrates after beating the final boss" charset="standard" fontSize={10} color="source" backdrop={0.18} normalize className="w-full" />
+          <AsciiImageCompare src={media("boss_162.jpg")} alt="The fighter celebrates after beating the final boss" charset="standard" fontSize={10} color="source" backdrop={0.18} normalize className="w-full" />
         </div>
       </div>
     </Section>
@@ -417,7 +417,7 @@ function Style() {
 
 function Limits() {
   const items = [
-    ["One live sample.", "The boss was beaten once live. The 87/100 rate comes from the simulator, which runs the same fight code but no renderer, so browser frame timing can differ slightly."],
+    ["Few live samples.", "Live, the net has beaten the boss in 2 of 4 matches. The video on this page is the second win, recorded with game audio after two 1–2 losses. The 87/100 rate comes from the simulator, which runs the same fight code but no renderer, so browser frame timing can differ slightly."],
     ["Bot opponents only.", "Every result is against the game's CPU on Hard. The net has never faced a human."],
     ["One character.", "Everything was trained as Mitraman. Other characters have different moves and would need their own data."],
     ["Read access via the dev hook.", "The live agent reads state through the developer's localhost hook rather than from pixels. Its only output is keyboard input."],

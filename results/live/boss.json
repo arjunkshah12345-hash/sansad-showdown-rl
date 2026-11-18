@@ -1,6 +1,26 @@
 [
  {
   "wins": [
+   1,
+   2
+  ],
+  "winner": 1,
+  "player": 0,
+  "opp": "mbapu",
+  "boss": true,
+  "decisions": 1356,
+  "hp": [
+   0,
+   51
+  ],
+  "won": false,
+  "tag": "01_modi_vs_mbapu_hard",
+  "attempt": 1,
+  "audioOffset": 0.022,
+  "frames": 5409
+ },
+ {
+  "wins": [
    2,
    1
   ],
@@ -8,12 +28,15 @@
   "player": 0,
   "opp": "mbapu",
   "boss": true,
-  "decisions": 1180,
+  "decisions": 1154,
   "hp": [
-   90,
+   98,
    0
   ],
   "won": true,
-  "tag": "01_modi_vs_mbapu_hard"
+  "tag": "01_modi_vs_mbapu_hard",
+  "attempt": 2,
+  "audioOffset": 0.037,
+  "frames": 5068
  }
 ]
