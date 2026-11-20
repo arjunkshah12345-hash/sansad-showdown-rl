@@ -1,0 +1,394 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Sansad Showdown RL — methodology</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{--night:#0b0806;--ink2:#15100c;--line:#2a2018;--line2:#4a3c30;--text:#f4ece2;--dim:#a8988a;--faint:#6b5a4a;
+  --saffron:#ff9933;--marigold:#ffc24b;--leaf:#2fbf4a;--lantern:#ff5fa2;
+  --sans:"Geist",ui-sans-serif,system-ui,sans-serif;--mono:"Geist Mono",ui-monospace,SFMono-Regular,monospace}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{width:100%;height:100%;background:#000;overflow:hidden}
+#stage{position:absolute;width:1920px;height:1080px;left:50%;top:50%;transform-origin:0 0;overflow:hidden}
+.slide{display:none;position:absolute;inset:0;width:1920px;height:1080px;background:var(--night);color:var(--text);font-family:var(--sans);padding:110px 140px 120px;overflow:hidden}
+.slide.on{display:flex;flex-direction:column;justify-content:center}
+.slide.on>.foot,.slide.on>.media,.slide.on>.shade{flex:none}
+.slide::after{content:"";position:absolute;inset:0;pointer-events:none;opacity:.22;
+  background-image:radial-gradient(#000 .9px,transparent 1.4px),radial-gradient(#000 .9px,transparent 1.4px);background-size:4px 4px;background-position:0 0,2px 2px}
+.foot{position:absolute;left:140px;right:140px;bottom:44px;display:flex;justify-content:space-between;font:400 18px var(--mono);color:var(--faint);letter-spacing:1px;z-index:2}
+.kicker{font:400 24px var(--mono);letter-spacing:4px;text-transform:uppercase;color:var(--saffron)}
+.k-dim{color:var(--dim)}
+h1{font-weight:500;font-size:110px;letter-spacing:-3.5px;line-height:1.02}
+h2{font-weight:500;font-size:72px;letter-spacing:-2px;line-height:1.05;margin-top:22px}
+.lead{font-size:34px;color:var(--dim);line-height:1.45;margin-top:26px;max-width:1500px}
+.acc{color:var(--saffron)} .leaf{color:var(--leaf)} .mari{color:var(--marigold)} .pink{color:var(--lantern)}
+.mono{font-family:var(--mono)}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:56px;margin-top:56px}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:28px;margin-top:56px}
+.card{background:rgba(21,16,12,.9);border:1px solid var(--line);padding:34px 36px}
+.card h3{font-weight:500;font-size:34px;letter-spacing:-.5px}
+.card p{font-size:25px;color:var(--dim);line-height:1.45;margin-top:12px}
+.card .n{font:400 20px var(--mono);color:var(--saffron);letter-spacing:2px;margin-bottom:14px}
+.big{font-weight:500;font-size:120px;letter-spacing:-4px;line-height:1;color:var(--saffron);font-variant-numeric:tabular-nums}
+.big-sub{font:400 24px var(--mono);color:var(--dim);margin-top:10px}
+.code{font:400 26px/1.65 var(--mono);background:var(--ink2);border:1px solid var(--line);padding:30px 36px;color:var(--text);white-space:pre}
+.code .c{color:var(--faint)} .code .s{color:var(--marigold)} .code .k{color:var(--saffron)}
+ul.list{list-style:none;margin-top:30px}
+ul.list li{font-size:31px;line-height:1.4;padding:14px 0 14px 46px;position:relative;border-bottom:1px solid var(--line)}
+ul.list li::before{content:"→";position:absolute;left:0;color:var(--saffron);font-family:var(--mono)}
+ul.list li span.d{color:var(--dim)}
+.media{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.shade{position:absolute;inset:0;background:linear-gradient(0deg,rgba(11,8,6,.96) 0%,rgba(11,8,6,.6) 38%,rgba(11,8,6,.1) 70%)}
+.over{position:absolute;left:140px;right:140px;bottom:130px;z-index:1}
+table{border-collapse:collapse;width:100%;margin-top:46px;font-size:30px}
+th{font:400 20px var(--mono);letter-spacing:2px;text-transform:uppercase;color:var(--dim);text-align:left;padding:0 18px 18px;border-bottom:1px solid var(--line2)}
+td{padding:22px 18px;border-bottom:1px solid var(--line);font-variant-numeric:tabular-nums}
+tr.hl td{color:var(--text);background:rgba(255,153,51,.07)}
+td.win{color:var(--leaf);font-weight:500}
+/* pipeline */
+.pipe{display:flex;align-items:stretch;gap:0;margin-top:70px}
+.pipe .st{flex:1;border:1px solid var(--line);background:rgba(21,16,12,.9);padding:30px 26px;position:relative}
+.pipe .st+.st{margin-left:46px}
+.pipe .st+.st::before{content:"→";position:absolute;left:-38px;top:50%;transform:translateY(-50%);font:400 30px var(--mono);color:var(--saffron)}
+.pipe .st .n{font:400 18px var(--mono);color:var(--saffron);letter-spacing:2px}
+.pipe .st h3{font-weight:500;font-size:32px;margin-top:12px}
+.pipe .st p{font-size:22px;color:var(--dim);margin-top:10px;line-height:1.4}
+.pipe .st .stat{font:500 34px var(--sans);color:var(--marigold);margin-top:18px}
+/* bars */
+.bar{margin-top:40px}
+.bar .lab{font-size:28px;color:var(--dim);display:flex;justify-content:space-between;width:1300px}
+.bar .track{width:1300px;height:48px;background:var(--ink2);border:1px solid var(--line);margin-top:12px;position:relative}
+.bar .fill{height:100%;background:var(--dim);width:0}
+.bar .fill.g{background:var(--leaf)}
+.bar .ghost{position:absolute;top:0;bottom:0;border-right:3px dashed var(--faint)}
+.bar .val{font:500 46px var(--sans);font-variant-numeric:tabular-nums}
+/* obs */
+.chips{display:flex;flex-wrap:wrap;gap:14px;margin-top:40px}
+.chip{font:400 23px var(--mono);border:1px solid var(--line2);padding:12px 18px;color:var(--text);background:rgba(21,16,12,.9)}
+.chip b{color:var(--saffron);font-weight:400}
+.keys{display:grid;grid-template-columns:repeat(6,1fr);gap:14px;margin-top:36px}
+.key{border:1px solid var(--line2);background:var(--ink2);padding:18px 10px;text-align:center;font:400 22px var(--mono);color:var(--dim)}
+.key b{display:block;font:500 30px var(--sans);color:var(--text);margin-bottom:4px}
+.key.hot{border-color:var(--saffron)} .key.hot b{color:var(--saffron)}
+.formula{font:400 30px/1.6 var(--mono);background:var(--ink2);border:1px solid var(--line);border-left:4px solid var(--saffron);padding:28px 34px;margin-top:40px}
+.split{display:grid;grid-template-columns:1.15fr .85fr;gap:70px;margin-top:40px;align-items:start}
+.imgcard{border:1px solid var(--line2);width:100%;display:block}
+.note{font:400 22px var(--mono);color:var(--faint);margin-top:18px}
+</style>
+</head>
+<body>
+<div id="stage">
+
+<!-- 01 Hook -->
+<section class="slide">
+  <video class="media" src="assets/ko.mp4" muted playsinline loop data-autoplay></video>
+  <div class="shade"></div>
+  <div class="over">
+    <div class="kicker" data-fx="fade">Sansad Showdown RL · methodology</div>
+    <h1 style="margin-top:24px" data-fx="rise" data-d="150">A 169k-parameter net beat the<br>game's secret <span class="acc">Hard final boss</span>.</h1>
+    <p class="lead" data-fx="fade" data-d="500">Keyboard only. Here's exactly how, step by step.</p>
+  </div>
+  <div class="foot"><span>Sansad Showdown RL</span><span>01</span></div>
+</section>
+
+<!-- 02 The rules -->
+<section class="slide">
+  <div class="kicker" data-fx="fade">The rules I set</div>
+  <h2 data-fx="rise" data-d="100">Play like a person would.</h2>
+  <div class="grid3">
+    <div class="card" data-fx="fade" data-d="300"><div class="n">IN</div><h3>130 numbers</h3><p>A summary of what's on screen: positions, health, meter, what each fighter is doing.</p></div>
+    <div class="card" data-fx="fade" data-d="450"><div class="n">OUT</div><h3>1 of 17 moves</h3><p>Turned into real <span class="mono">keydown</span> / <span class="mono">keyup</span> events, 15 times a second.</p></div>
+    <div class="card" data-fx="fade" data-d="600"><div class="n">NEVER</div><h3>Writes to the game</h3><p>No memory edits, no speed changes, no skipping. It reads state and presses keys.</p></div>
+  </div>
+  <p class="note" data-fx="fade" data-d="800">Reads come from the game's own read-only developer hook, which is only exposed on localhost.</p>
+  <div class="foot"><span>Sansad Showdown RL</span><span>02</span></div>
+</section>
+
+<!-- 03 Overview -->
+<section class="slide">
+  <div class="kicker" data-fx="fade">The recipe</div>
+  <h2 data-fx="rise" data-d="100">Five steps from a JS bundle to a boss-beating net.</h2>
+  <div class="pipe">
+    <div class="st" data-fx="fade" data-d="250"><div class="n">01</div><h3>Simulator</h3><p>The game's real fight code, headless in Node.</p><div class="stat">40k ticks/s</div></div>
+    <div class="st" data-fx="fade" data-d="400"><div class="n">02</div><h3>Teacher</h3><p>A lookahead search player.</p><div class="stat">4 / 5 wins</div></div>
+    <div class="st" data-fx="fade" data-d="550"><div class="n">03</div><h3>Student</h3><p>A small MLP that copies it.</p><div class="stat">0.2 ms / move</div></div>
+    <div class="st" data-fx="fade" data-d="700"><div class="n">04</div><h3>DAgger</h3><p>The teacher corrects the student's mistakes.</p><div class="stat">62 → 87</div></div>
+    <div class="st" data-fx="fade" data-d="850"><div class="n">05</div><h3>Keyboard</h3><p>The net plays the real game.</p><div class="stat">2–1 live</div></div>
+  </div>
+  <div class="foot"><span>Sansad Showdown RL</span><span>03</span></div>
+</section>
+
+<!-- 04 Simulator -->
+<section class="slide">
+  <div class="kicker" data-fx="fade">Step 01 · Simulator</div>
+  <h2 data-fx="rise" data-d="100">Don't write a simulator. <span class="acc">Borrow the game's.</span></h2>
+  <div class="split">
+    <div class="code" data-fx="fade" data-d="300"><span class="c">// build.py: cut the bundle before DOM bootstrapping</span>
+<span class="k">export</span> { Battle, Fighter, Bot, Match, CHARS, BOSS }
+
+<span class="c">// stubs.mjs: just enough fake browser</span>
+document, localStorage, <span class="s">4×4 canvas</span>
+renderer, rigs, audio → <span class="s">no-op Proxy</span>
+
+<span class="c">// determinism</span>
+b._rs = seeded RNG   <span class="c">// gameplay randomness</span>
+Math.random          <span class="c">// visual effects only</span></div>
+    <div>
+      <div data-fx="fade" data-d="500"><div class="big">40,000</div><div class="big-sub">ticks per second · ~666× real time</div></div>
+      <div style="margin-top:50px" data-fx="fade" data-d="700"><div class="big mari">13 µs</div><div class="big-sub">to clone the whole fight state</div></div>
+      <p class="lead" style="font-size:28px" data-fx="fade" data-d="900">It's the shipping fight logic, so there's no second physics model to drift out of sync.</p>
+    </div>
+  </div>
+  <div class="foot"><span>Sansad Showdown RL</span><span>04</span></div>
+</section>
+
+<!-- 05 Action space -->
+<section class="slide">
+  <div class="kicker" data-fx="fade">Step 01 · The action space</div>
+  <h2 data-fx="rise" data-d="100">17 moves, relative to the opponent.</h2>
+  <div class="keys" data-fx="fade" data-d="300">
+    <div class="key"><b>idle</b>—</div><div class="key"><b>fwd</b>hold</div><div class="key"><b>block</b>hold</div><div class="key"><b>lowblock</b>hold</div><div class="key"><b>crouch</b>hold</div><div class="key"><b>jump</b>W</div>
+    <div class="key"><b>jumpfwd</b>W+fwd</div><div class="key"><b>jumpback</b>W+back</div><div class="key hot"><b>punch</b>J</div><div class="key hot"><b>kick</b>K</div><div class="key"><b>fwdpunch</b>fwd+J</div><div class="key"><b>fwdkick</b>fwd+K</div>
+    <div class="key"><b>lowpunch</b>S+J</div><div class="key"><b>lowkick</b>S+K</div><div class="key hot"><b>grab</b>I</div><div class="key hot"><b>super</b>L</div><div class="key"><b>budget</b>B</div><div class="key" style="opacity:0"></div>
+  </div>
+  <ul class="list" data-fx="fade" data-d="550">
+    <li>One decision covers <b>4 ticks</b>, so <b>15 decisions a second</b>.</li>
+    <li>Directions are held for the window. <span class="d">Buttons are tapped on the first tick only, because the game reacts to key-down edges.</span></li>
+  </ul>
+  <div class="foot"><span>Sansad Showdown RL</span><span>05</span></div>
+</section>
+
+<!-- 06 Teacher -->
+<section class="slide">
+  <div class="kicker" data-fx="fade">Step 02 · The teacher</div>
+  <h2 data-fx="rise" data-d="100">A search player that tries every move.</h2>
+  <div class="split">
+    <ul class="list" data-fx="fade" data-d="300" style="margin-top:0">
+      <li>Clone the battle, <span class="d">reseed the clone's RNG so the CPU reacts differently each sample</span></li>
+      <li>Play the move, <span class="d">fast-forward any super or grapple cinematic</span></li>
+      <li>Finish a <b>48-tick</b> horizon <span class="d">with a cheap scripted tail: guard up, poke when close</span></li>
+      <li>Score the end state, <b>average over 8 futures</b></li>
+    </ul>
+    <div data-fx="fade" data-d="500">
+      <div class="big">81 ms</div><div class="big-sub">per decision</div>
+      <div class="big leaf" style="margin-top:40px">4 / 5</div><div class="big-sub">wins vs Hard boss (8 samples, 48 ticks)<br>3 / 5 with 4 samples, 40 ticks</div>
+    </div>
+  </div>
+  <div class="formula" data-fx="fade" data-d="750">score = oppHP lost <span class="acc">− 1.25 × ownHP lost</span> + 60·[opp KO] − 80·[own KO] + 0.04·own meter − 0.03·opp meter</div>
+  <div class="foot"><span>Sansad Showdown RL</span><span>06</span></div>
+</section>
+
+<!-- 07 Too slow -->
+<section class="slide">
+  <div class="kicker" data-fx="fade">The catch</div>
+  <h2 data-fx="rise" data-d="100">Strong, but far too slow to play live.</h2>
+  <div class="grid2">
+    <div data-fx="fade" data-d="300"><div class="big">3½–11 min</div><div class="big-sub">of compute per boss match</div></div>
+    <div data-fx="fade" data-d="450"><div class="big">66 ms</div><div class="big-sub">between decisions at 15 a second. The search alone needs 81.</div></div>
+  </div>
+  <p class="lead" data-fx="fade" data-d="650">So the search player becomes a <span class="acc">teacher</span>. Every decision it makes is logged as <span class="mono">(observation, value of every move, best move)</span>, and a small net learns to copy it.</p>
+  <div class="foot"><span>Sansad Showdown RL</span><span>07</span></div>
+</section>
+
+<!-- 08 Observation -->
+<section class="slide">
+  <div class="kicker" data-fx="fade">Step 03 · What the net sees</div>
+  <h2 data-fx="rise" data-d="100">130 numbers, mirrored so "forward" always means toward the opponent.</h2>
+  <div class="chips" data-fx="fade" data-d="300">
+    <div class="chip"><b>distance</b></div>
+    <div class="chip">position · velocity</div><div class="chip">HP · meter · stun</div><div class="chip">crouch · grounded · blocking</div>
+    <div class="chip">combo count · facing</div><div class="chip">frames in state</div><div class="chip"><b>14</b> state one-hots</div><div class="chip"><b>14</b> attack one-hots</div>
+    <div class="chip">attack phase: startup / active / recovery</div><div class="chip">attack progress</div>
+    <div class="chip">round timer · round · rounds won</div><div class="chip">boss flag</div><div class="chip">budget power-up · bomb · mithai</div><div class="chip">hit-stop</div><div class="chip"><b>previous action</b></div>
+  </div>
+  <p class="lead" data-fx="fade" data-d="550">Every per-fighter feature is there for <b>both</b> fighters. The same file, <span class="mono">obs.mjs</span>, runs unchanged in Node and in the browser, so training and live play see identical inputs.</p>
+  <div class="foot"><span>Sansad Showdown RL</span><span>08</span></div>
+</section>
+
+<!-- 09 Net + loss -->
+<section class="slide">
+  <div class="kicker" data-fx="fade">Step 03 · The student</div>
+  <h2 data-fx="rise" data-d="100">A tiny MLP that learns <span class="acc">how much</span> worse each move is.</h2>
+  <div class="split">
+    <div>
+      <div class="code" data-fx="fade" data-d="300">MLP  130 → 256 → 256 → 256 → 17
+ReLU · standardised inputs · <span class="s">~169k params</span>
+
+loss = soft + 0.5 · hard
+  soft: softmax(values / <span class="k">τ=2</span>), legal moves only
+  hard: cross-entropy on the teacher's pick
+
+AdamW 1e-3 · cosine · 30 epochs
+batch 512 · Apple MPS</div>
+      <p class="note" data-fx="fade" data-d="600">Weights export to JSON. The forward pass is 15 lines of plain JS.</p>
+    </div>
+    <div data-fx="fade" data-d="500">
+      <div class="big">0.2 ms</div><div class="big-sub">per decision</div>
+      <div class="big mari" style="margin-top:40px">~400×</div><div class="big-sub">cheaper than the search</div>
+    </div>
+  </div>
+  <div class="foot"><span>Sansad Showdown RL</span><span>09</span></div>
+</section>
+
+<!-- 10 The problem -->
+<section class="slide">
+  <div class="kicker" data-fx="fade">The problem</div>
+  <h2 data-fx="rise" data-d="100">It copied the teacher 94% of the time,<br>and <span class="acc">still lost to the boss</span>.</h2>
+  <div class="grid2">
+    <div data-fx="fade" data-d="300"><div class="big k-dim" style="color:var(--text)">94.3%</div><div class="big-sub">agreement with the teacher (r1, 41,758 samples)</div></div>
+    <div data-fx="fade" data-d="450"><div class="big pink">62 / 100</div><div class="big-sub">wins vs the Hard boss</div></div>
+  </div>
+  <p class="lead" data-fx="fade" data-d="700">The teacher never wanders into the positions the student's small mistakes lead to. So once the student is somewhere new, it has no idea how to get out. Errors compound.</p>
+  <div class="foot"><span>Sansad Showdown RL</span><span>10</span></div>
+</section>
+
+<!-- 11 DAgger -->
+<section class="slide">
+  <div class="kicker" data-fx="fade">Step 04 · DAgger</div>
+  <h2 data-fx="rise" data-d="100">Let the student drive. Let the teacher label.</h2>
+  <div class="grid3">
+    <div class="card" data-fx="fade" data-d="300"><div class="n">PLAY</div><h3>Mixed rollouts</h3><p>7 workers play 50/50 mixes of net and search moves. 60% of matches are against the boss.</p></div>
+    <div class="card" data-fx="fade" data-d="450"><div class="n">LABEL</div><h3>Search labels everything</h3><p>Even when the net chose the move, the teacher scores every state it reached.</p></div>
+    <div class="card" data-fx="fade" data-d="600"><div class="n">RETRAIN</div><h3>One round</h3><p>17,338 new labels. The net retrains on 59,096 pairs (r2).</p></div>
+  </div>
+  <p class="lead" data-fx="fade" data-d="800">The new data covers exactly the states where the net used to fall apart.</p>
+  <div class="foot"><span>Sansad Showdown RL</span><span>11</span></div>
+</section>
+
+<!-- 12 Results -->
+<section class="slide">
+  <div class="kicker" data-fx="fade">Results · simulator</div>
+  <h2 data-fx="rise" data-d="100">Agreement barely moved. <span class="leaf">Wins jumped 25 points.</span></h2>
+  <div class="bar" data-fx="fade" data-d="300">
+    <div class="lab"><span>Agreement with teacher</span><span class="val" style="color:var(--dim)">94.3% → 94.9%</span></div>
+    <div class="track"><div class="fill" data-w="94.9"></div></div>
+  </div>
+  <div class="bar" data-fx="fade" data-d="450">
+    <div class="lab"><span>Wins vs Hard boss (of 100)</span><span class="val leaf">62 → 87</span></div>
+    <div class="track"><div class="ghost" style="left:62%"></div><div class="fill g" data-w="87" data-from="62"></div></div>
+  </div>
+  <table data-fx="fade" data-d="700">
+    <tr><th></th><th>samples</th><th>top-1</th><th>regret</th><th>vs boss</th><th>vs 9 others</th><th>boss losses</th></tr>
+    <tr><td>r1 imitation</td><td>41,758</td><td>94.3%</td><td>0.32</td><td>62 / 100</td><td>97 / 100</td><td>38</td></tr>
+    <tr class="hl"><td>r2 + DAgger</td><td>59,096</td><td>94.9%</td><td>0.28</td><td class="win">87 / 100</td><td>97 / 100</td><td class="win">13</td></tr>
+  </table>
+  <div class="foot"><span>Sansad Showdown RL</span><span>12</span></div>
+</section>
+
+<!-- 13 What it learned -->
+<section class="slide">
+  <div class="kicker" data-fx="fade">What it learned</div>
+  <div style="display:flex;align-items:flex-end;gap:60px;margin-top:30px">
+    <div data-fx="rise" data-d="100"><div class="big" style="font-size:260px;letter-spacing:-10px">93.6%</div></div>
+    <div data-fx="fade" data-d="300" style="padding-bottom:30px"><h2 style="margin:0">of its moves<br>are <span class="acc">idle</span>.</h2></div>
+  </div>
+  <div class="grid2" style="margin-top:40px">
+    <div class="card" data-fx="fade" data-d="500"><div class="n">41%</div><h3>Locked into something</h3><p>Its own attack animation, knocked down, mid-jump, or in stun. Nothing it presses would matter.</p></div>
+    <div class="card" data-fx="fade" data-d="650"><div class="n">59%</div><h3>A real choice</h3><p>In neutral it stands still <b style="color:var(--text)">95%</b> of the time. It waits for the boss to commit, then punishes with punch, forward kick, kick and grab.</p></div>
+  </div>
+  <p class="note" data-fx="fade" data-d="850">It inherited the counter-punching style from the teacher, which counts its own health 1.25× more than the boss's. 11,685 decisions over 10 sim matches.</p>
+  <div class="foot"><span>Sansad Showdown RL</span><span>13</span></div>
+</section>
+
+<!-- 14 Live play -->
+<section class="slide">
+  <div class="kicker" data-fx="fade">Step 05 · Playing the real game</div>
+  <h2 data-fx="rise" data-d="100">Every frame: read, decide, press.</h2>
+  <div class="split">
+    <ul class="list" data-fx="fade" data-d="300" style="margin-top:0">
+      <li>Read <span class="mono">window.__game.battle</span> <span class="d">on each animation frame</span></li>
+      <li>Wait for the next <b>4-tick slot</b> <span class="d">on the game's own clock, so dropped frames don't desync it</span></li>
+      <li>Build the same 130 numbers, run the net, <b>mask illegal moves</b> <span class="d">(super needs full meter, budget needs the pickup)</span></li>
+      <li>Hold <span class="mono">A D W S</span>, tap <span class="mono">J K I L B</span></li>
+    </ul>
+    <div data-fx="fade" data-d="500">
+      <video class="imgcard" src="assets/combo.mp4" muted playsinline loop data-autoplay></video>
+      <p class="note">Recorded with Playwright. The game's audio is captured by hooking <span class="acc">AudioNode.connect</span> into a MediaRecorder and aligned to the video by wall-clock start time.</p>
+    </div>
+  </div>
+  <div class="foot"><span>Sansad Showdown RL</span><span>14</span></div>
+</section>
+
+<!-- 15 Live results -->
+<section class="slide">
+  <div class="kicker" data-fx="fade">Results · live, in the browser</div>
+  <h2 data-fx="rise" data-d="100">Two recorded wins, with sound.</h2>
+  <div class="grid2" style="margin-top:44px">
+    <div data-fx="fade" data-d="300">
+      <img class="imgcard" src="assets/boss_162.jpg" alt="">
+      <div class="big leaf" style="font-size:90px;margin-top:26px">2–1</div>
+      <div class="big-sub">Hard final boss · 98 HP left · 1,154 decisions · 2:49</div>
+    </div>
+    <div data-fx="fade" data-d="450">
+      <img class="imgcard" src="assets/rahul_10.jpg" alt="">
+      <div class="big leaf" style="font-size:90px;margin-top:26px">2–0</div>
+      <div class="big-sub">Hard Rahul · 470 decisions · 1:19</div>
+    </div>
+  </div>
+  <div class="foot"><span>Sansad Showdown RL</span><span>15</span></div>
+</section>
+
+<!-- 16 Caveats -->
+<section class="slide">
+  <div class="kicker" data-fx="fade">Honest caveats</div>
+  <h2 data-fx="rise" data-d="100">What this does <span class="acc">not</span> show yet.</h2>
+  <ul class="list" data-fx="fade" data-d="300">
+    <li><b>2 wins in 4</b> live boss matches so far. <span class="d">Well under the simulator's 87%. Browser frame timing differs slightly from the sim.</span></li>
+    <li>It has only faced the <b>CPU on Hard</b>. <span class="d">Humans don't play like the bot.</span></li>
+    <li><b>One character</b> was trained. <span class="d">Mitraman only.</span></li>
+    <li>It <b>reads</b> state through the developer's localhost hook. <span class="d">It still only sends keyboard input.</span></li>
+  </ul>
+  <div class="foot"><span>Sansad Showdown RL</span><span>16</span></div>
+</section>
+
+<!-- 17 Close -->
+<section class="slide">
+  <video class="media" src="assets/super.mp4" muted playsinline loop data-autoplay style="filter:brightness(.3) saturate(.7);transform:scale(1.35)"></video>
+  <div style="position:relative;z-index:1;height:100%;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center">
+    <div class="mono" style="font-size:28px;color:var(--dim)" data-fx="fade">game code → simulator → search → net → DAgger → <span class="acc">keyboard</span></div>
+    <h1 style="margin-top:34px" data-fx="rise" data-d="200">Sansad Showdown RL</h1>
+    <div class="mono acc" style="font-size:36px;margin-top:26px" data-fx="fade" data-d="450">arjunkshah12345-hash.github.io/sansad-showdown-rl</div>
+    <div class="mono" style="font-size:24px;color:var(--dim);margin-top:40px" data-fx="fade" data-d="650">write-up · both fights with sound · code</div>
+  </div>
+  <div class="foot"><span>Sansad Showdown RL</span><span>17</span></div>
+</section>
+
+</div>
+<script>
+(function(){
+const slides=[...document.querySelectorAll('.slide')];
+const stage=document.getElementById('stage');
+let cur=0,anims=[],timers=[];
+const EASE='cubic-bezier(.16,1,.3,1)';
+function fit(){const k=Math.min(innerWidth/1920,innerHeight/1080);stage.style.transform=`scale(${k}) translate(-50%,-50%)`;}
+const play=(el,kf,o)=>{const a=el.animate(kf,Object.assign({fill:'backwards',easing:EASE},o));anims.push(a);return a;};
+const FX={
+  fade:(el,d)=>play(el,[{opacity:0,transform:'translateY(18px)',filter:'blur(6px)'},{opacity:1,transform:'none',filter:'blur(0)'}],{duration:900,delay:d}),
+  rise:(el,d)=>play(el,[{opacity:0,transform:'translateY(50px)'},{opacity:1,transform:'none'}],{duration:1200,delay:d}),
+};
+function reset(){anims.forEach(a=>a.cancel());anims=[];timers.forEach(clearTimeout);timers=[];
+  document.querySelectorAll('video').forEach(v=>{v.pause();});
+  document.querySelectorAll('.fill').forEach(f=>{f.style.transition='none';f.style.width=(f.dataset.from||0)+'%';});}
+function run(s){
+  s.querySelectorAll('[data-fx]').forEach(el=>{const f=FX[el.dataset.fx];if(f)f(el,+(el.dataset.d||0));});
+  s.querySelectorAll('video[data-autoplay]').forEach(v=>{try{v.currentTime=0;}catch(e){}v.play().catch(()=>{});});
+  s.querySelectorAll('.fill').forEach(f=>{timers.push(setTimeout(()=>{f.style.transition='width 1.4s '+EASE;f.style.width=f.dataset.w+'%';},900));});
+}
+function show(n){cur=Math.max(0,Math.min(slides.length-1,n|0));reset();
+  slides.forEach((s,j)=>s.classList.toggle('on',j===cur));run(slides[cur]);
+  try{history.replaceState(null,'','#'+(cur+1));}catch(e){}}
+window.show=show;
+addEventListener('keydown',e=>{
+  if(window.parent!==window) return;
+  if(['ArrowRight','ArrowDown',' ','PageDown','Enter'].includes(e.key))show(cur+1);
+  else if(['ArrowLeft','ArrowUp','PageUp','Backspace'].includes(e.key))show(cur-1);
+  else if(e.key==='r')show(cur);
+});
+addEventListener('resize',fit);fit();
+show(+(location.hash.slice(1)||1)-1);
+})();
+</script>
+</body>
+</html>
